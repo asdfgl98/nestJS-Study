@@ -57,6 +57,9 @@ export class PostsService {
         const post = await this.postsRepository.findOne({
           where:{
             id:id,
+          },
+          relations:{
+            author: true
           }
         })
 
@@ -68,9 +71,11 @@ export class PostsService {
     }
 
     //리소스 생성
-    async createPost(author: string, title: string, content: string){
+    async createPost(authorId: number, title: string, content: string){
         const post = this.postsRepository.create({
-          author,
+          author:{
+            id: authorId
+          },
           title,
           content,
           likeCount: 0,
@@ -92,11 +97,7 @@ export class PostsService {
 
         if(!post){
         throw new NotFoundException()
-        }
-
-        if(author){
-        post.author = author
-        }
+        }      
 
         if(title){
         post.title = title
